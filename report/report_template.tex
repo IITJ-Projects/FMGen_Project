@@ -4,6 +4,7 @@
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{algorithmic}
 \usepackage{graphicx}
+\usepackage{float}
 \usepackage{textcomp}
 \usepackage{xcolor}
 \usepackage{url}
@@ -11,38 +12,44 @@
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
 
-\title{Zevo AI: A Production-Grade Conversational AI Platform with Real-Time Text Mode Implementation}
+\title{A Production-Grade Conversational AI Platform}
 
-\author{\IEEEauthorblockN{Project Team}
-\IEEEauthorblockA{\textit{Zevo AI Development Team} \\
-\textit{ZevoCode} \\
-\textit{Production Deployment}
-}
+\author{\IEEEauthorblockN{1\textsuperscript{st}Om Prakash Solanki}
+\IEEEauthorblockA{\textit{Computer Science \& Engineering} \\
+\textit{Indian Institute of Technology}\\
+Jodhpur, India \\
+m23csa521@iitj.ac.in}
+\and
+\IEEEauthorblockN{2\textsuperscript{nd} Shyam Vyas}
+\IEEEauthorblockA{\textit{Computer Science \& Engineering} \\
+\textit{Indian Institute of Technology}\\
+Jodhpur, India \\
+m23csa545@iitj.ac.in}
 }
 
 \maketitle
 
 \begin{abstract}
-This paper presents Zevo AI, a production-grade conversational AI platform implementing a text-based interaction mode with real-time streaming capabilities. The system integrates multiple microservices including Retrieval-Augmented Generation (RAG), Large Language Model (LLM) inference, and Text-to-Speech (TTS) synthesis. The text mode implementation features token-by-token streaming using AsyncLLMEngine, context-aware responses through RAG integration, and on-demand audio playback. The architecture employs a modular service-oriented design with Docker containerization, enabling scalable deployment. The system demonstrates sub-5 second end-to-end response times with real-time token streaming, achieving production-ready performance for conversational AI applications.
+This paper presents a production-grade conversational AI platform implementing a text-based interaction mode with real-time streaming capabilities. The system integrates multiple microservices including Retrieval-Augmented Generation (RAG), Large Language Model (LLM) inference, and Text-to-Speech (TTS) synthesis. The implementation features token-by-token streaming using AsyncLLMEngine, context-aware responses through RAG integration, and on-demand audio playback. The architecture employs a modular service-oriented design with Docker containerization, enabling scalable deployment. The system demonstrates sub-5 second end-to-end response times with real-time token streaming, achieving production-ready performance for conversational AI applications.
 \end{abstract}
 
 \begin{IEEEkeywords}
-conversational AI, retrieval-augmented generation, real-time streaming, microservices, natural language processing, text mode
+conversational AI, retrieval-augmented generation, real-time streaming, microservices, natural language processing
 \end{IEEEkeywords}
 
 \section{Introduction}
 
-Conversational AI systems have evolved significantly, with modern implementations requiring real-time response generation, context awareness, and scalable architectures. This paper presents Zevo AI, a production-grade conversational AI platform that implements a text-based interaction mode with advanced features including real-time token streaming, retrieval-augmented generation, and adaptive response generation.
+Conversational AI systems have evolved significantly, with modern implementations requiring real-time response generation, context awareness, and scalable architectures. This paper presents a production-grade conversational AI platform that implements a text-based interaction mode with advanced features including real-time token streaming, retrieval-augmented generation, and adaptive response generation.
 
-The text mode implementation addresses key challenges in conversational AI: providing immediate user feedback through streaming responses, maintaining conversation context, and integrating external knowledge bases through RAG. The system architecture follows a microservices pattern, enabling independent scaling and deployment of components.
+The implementation addresses key challenges in conversational AI: providing immediate user feedback through streaming responses, maintaining conversation context, and integrating external knowledge bases through RAG. The system architecture follows a microservices pattern, enabling independent scaling and deployment of components.
 
-The contributions of this work include: (1) a production-ready text mode implementation with real-time streaming capabilities, (2) integration of RAG for context-aware responses, (3) a modular service architecture supporting independent scaling, and (4) performance optimizations achieving sub-5 second end-to-end response times.
+The contributions of this work include: (1) a production-ready implementation with real-time streaming capabilities, (2) integration of RAG for context-aware responses, (3) a modular service architecture supporting independent scaling, and (4) performance optimizations achieving sub-5 second end-to-end response times.
 
 \section{System Architecture}
 
 \subsection{Overview}
 
-Zevo AI employs a microservices architecture with five core services: Orchestration Service, RAG Service, LLM Service, TTS Service, and ASR Service. The text mode implementation primarily utilizes the Orchestration, RAG, and LLM services, with optional TTS for on-demand audio playback.
+The system employs a microservices architecture with five core services: Orchestration Service, RAG Service, LLM Service, TTS Service, and ASR Service. The implementation primarily utilizes the Orchestration, RAG, and LLM services, with optional TTS for on-demand audio playback.
 
 The system follows a pipeline architecture where user text input flows through: Frontend $\rightarrow$ Orchestration Service $\rightarrow$ RAG Service $\rightarrow$ LLM Service $\rightarrow$ Frontend, with optional TTS synthesis when requested by the user.
 
@@ -65,17 +72,24 @@ The RAG Service (Port 8004) implements retrieval-augmented generation using dual
 The LLM Service (Port 8002) hosts Meta-Llama-3-8B-Instruct model using vLLM inference engine. The service implements AsyncLLMEngine for true token-by-token streaming, enabling real-time response generation with sub-100ms token latency.
 
 \subsubsection{TTS Service}
-The TTS Service (Port 8003) provides on-demand text-to-speech synthesis using MeloTTS. In text mode, TTS is not automatically triggered; instead, users can request audio playback via a speaker icon, which calls the \texttt{/api/tts} endpoint.
+The TTS Service (Port 8003) provides on-demand text-to-speech synthesis using MeloTTS. TTS is not automatically triggered; instead, users can request audio playback via a speaker icon, which calls the \texttt{/api/tts} endpoint.
 
 \subsection{Frontend Implementation}
 
-The frontend application (Port 8080) implements a single-page web interface with WebSocket support for real-time communication. The text mode interface includes: text input area, chat history display, real-time streaming text rendering with Markdown support, and optional speaker icon for manual TTS playback.
+The frontend application (Port 8080) implements a single-page web interface with WebSocket support for real-time communication. The interface includes: text input area, chat history display, real-time streaming text rendering with Markdown support, and optional speaker icon for manual TTS playback.
 
-\section{Text Mode Implementation}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\columnwidth]{figers/agent.png}
+\caption{Agent Portal Interface showing the conversational AI with real-time streaming, chat history, and user interaction elements.}
+\label{fig:agent_portal}
+\end{figure}
+
+\section{Implementation}
 
 \subsection{Real-Time Streaming Architecture}
 
-The text mode implementation features real-time token streaming using Server-Sent Events (SSE) protocol. When a user submits a text message, the frontend establishes a WebSocket connection to the Orchestration Service, which then streams tokens from the LLM Service as they are generated.
+The implementation features real-time token streaming using Server-Sent Events (SSE) protocol. When a user submits a text message, the frontend establishes a WebSocket connection to the Orchestration Service, which then streams tokens from the LLM Service as they are generated.
 
 The streaming pipeline operates as follows:
 \begin{enumerate}
@@ -100,6 +114,17 @@ The RAG retrieval process includes:
 \item Context formatting with priority instructions
 \end{itemize}
 
+\subsection{Knowledge Base Ingestion}
+
+The system provides a document upload interface for building the knowledge base. Users can upload documents in various formats (PDF, text, markdown) through the RAG ingestion portal. The uploaded documents are processed, chunked into appropriate segments, embedded using the dual embedding models, and stored in the Qdrant vector database for efficient retrieval during query processing.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\columnwidth]{figers/RAGIngestion.png}
+\caption{RAG Ingestion Interface showing the document upload portal where users can upload documents to build the knowledge base for retrieval-augmented generation.}
+\label{fig:rag_ingestion}
+\end{figure}
+
 \subsection{Adaptive Response Generation}
 
 The system implements adaptive response length based on user intent. A heuristic function analyzes the user's message for keywords indicating preference for detailed or concise responses. Keywords such as ``explain in detail'', ``step-by-step'', or ``comprehensive'' trigger extended responses (up to 2048 tokens), while brief queries receive concise responses (96-240 tokens).
@@ -112,7 +137,7 @@ The Orchestration Service maintains in-memory conversation history for each sess
 
 \subsection{Request Processing Pipeline}
 
-The text mode request processing follows a sequential pipeline with the following stages:
+The request processing follows a sequential pipeline with the following stages:
 
 \textbf{Stage 1: Input Reception} - The frontend receives user text input and sends it to the Orchestration Service via WebSocket or HTTP POST to \texttt{/api/chat}.
 
@@ -126,7 +151,7 @@ The text mode request processing follows a sequential pipeline with the followin
 
 \subsection{WebSocket Communication Protocol}
 
-The WebSocket protocol (\texttt{ws://agent.zevo360.in/ws/chat/\{session\_id\}}) supports bidirectional communication with the following message types:
+The WebSocket protocol (\texttt{ws://agent.example.com/ws/chat/\{session\_id\}}) supports bidirectional communication with the following message types:
 
 \begin{itemize}
 \item \texttt{text\_message}: User text input with session identifier
@@ -149,7 +174,7 @@ For non-streaming requests, the system provides HTTP REST endpoints:
 
 \subsection{Latency Metrics}
 
-The system tracks latency at each pipeline stage. Typical performance metrics for text mode include:
+The system tracks latency at each pipeline stage. Typical performance metrics include:
 
 \begin{itemize}
 \item Connection initialization: 360 ms
@@ -158,6 +183,66 @@ The system tracks latency at each pipeline stage. Typical performance metrics fo
 \item LLM token streaming: Real-time (50+ tokens/second)
 \item Total end-to-end response: 4600 ms (for complete response)
 \end{itemize}
+
+\subsection{Performance Metrics \& Latency Tracker}
+
+The system provides comprehensive performance monitoring through a real-time metrics dashboard. The performance tracker monitors overall system statistics and individual session latencies, enabling identification of bottlenecks and optimization opportunities.
+
+\subsubsection{Overall Performance Statistics}
+
+Based on production deployment analysis, the system demonstrates the following overall performance characteristics:
+
+\begin{itemize}
+\item \textbf{Total Requests}: 14 (sample measurement period)
+\item \textbf{Average Response Time}: 5199.98 ms
+\item \textbf{Performance Trend}: Improving
+\item \textbf{Most Common Bottleneck}: LLM generation
+\end{itemize}
+
+The average step times across the pipeline stages are:
+\begin{itemize}
+\item Conversation storage: 0.04 ms
+\item Context preparation: 0.04 ms
+\item LLM generation: 4400.45 ms (primary bottleneck)
+\item Response storage: 0.03 ms
+\item TTS generation: 0.00 ms (not used in text mode)
+\item Response preparation: 0.02 ms
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\columnwidth]{figers/matrics-1.png}
+\caption{Overall Performance Statistics dashboard showing total requests, average response time, performance trend, and average step times across pipeline stages.}
+\label{fig:performance_metrics}
+\end{figure}
+
+\subsubsection{Session-Level Latency Analysis}
+
+The system tracks individual session latencies to identify performance patterns. A representative session analysis shows:
+
+\begin{itemize}
+\item \textbf{Session ID}: session\_1764165164125\_ca2iq65gb
+\item \textbf{Total Duration}: 2226.85 ms
+\end{itemize}
+
+The latency breakdown by pipeline stage for this session:
+\begin{itemize}
+\item Conversation storage: 0.0\% (0.04 ms)
+\item RAG retrieval: 40.4\% (900.62 ms)
+\item Context preparation: 0.0\% (0.04 ms)
+\item LLM generation: 59.5\% (1325.94 ms) - \textbf{Bottleneck}
+\item Response storage: 0.0\% (0.03 ms)
+\item Response preparation: 0.0\% (0.02 ms)
+\end{itemize}
+
+The analysis reveals that LLM generation accounts for the majority of processing time (59.5\%), followed by RAG retrieval (40.4\%). This indicates that optimization efforts should focus on LLM inference speed and RAG retrieval efficiency.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\columnwidth]{figers/matrics-2.png}
+\caption{Current Session Latency Tracker showing detailed breakdown of processing time by pipeline stage, with LLM generation identified as the primary bottleneck.}
+\label{fig:latency_tracker}
+\end{figure}
 
 \subsection{Throughput Capabilities}
 
@@ -198,7 +283,7 @@ All services are containerized using Docker, enabling consistent deployment acro
 
 \subsection{Service Dependencies}
 
-The orchestration service depends on: ASR Service, LLM Service, RAG Service, and TTS Service. The RAG Service depends on Qdrant database. Services communicate via Docker network (\texttt{zevo-network}) using service names for DNS resolution.
+The orchestration service depends on: ASR Service, LLM Service, RAG Service, and TTS Service. The RAG Service depends on Qdrant database. Services communicate via Docker network (\texttt{service-network}) using service names for DNS resolution.
 
 \subsection{Scaling Considerations}
 
@@ -208,7 +293,7 @@ The microservices architecture enables independent scaling. The LLM Service can 
 
 \subsection{Real-Time Streaming}
 
-The text mode implementation provides ChatGPT-like real-time streaming experience, with tokens appearing incrementally as they are generated. This eliminates the perception of delay and provides immediate user feedback.
+The implementation provides ChatGPT-like real-time streaming experience, with tokens appearing incrementally as they are generated. This eliminates the perception of delay and provides immediate user feedback.
 
 \subsection{Context-Aware Responses}
 
@@ -242,13 +327,16 @@ In-memory session storage limits scalability. The current implementation uses in
 
 \section{Conclusion}
 
-This paper presented Zevo AI, a production-grade conversational AI platform with a comprehensive text mode implementation. The system demonstrates successful integration of real-time streaming, RAG-based context retrieval, and adaptive response generation. The microservices architecture enables scalable deployment, and performance optimizations achieve sub-5 second end-to-end response times with real-time token streaming.
+This paper presented a production-grade conversational AI platform with a comprehensive implementation. The system demonstrates successful integration of real-time streaming, RAG-based context retrieval, and adaptive response generation. The microservices architecture enables scalable deployment, and performance optimizations achieve sub-5 second end-to-end response times with real-time token streaming.
 
 Key achievements include: (1) real-time token-by-token streaming using AsyncLLMEngine, (2) effective RAG integration with dual embedding models, (3) adaptive response generation based on user intent, and (4) production-ready deployment with Docker containerization.
 
 Future work includes: (1) implementing Redis-based session management for horizontal scaling, (2) adding support for multi-turn RAG queries, (3) implementing response caching for common queries, and (4) expanding multilingual support with additional language models.
 
-The text mode implementation provides a solid foundation for conversational AI applications requiring real-time interaction, context awareness, and scalable deployment. The modular architecture enables easy extension and customization for domain-specific applications.
+The implementation provides a solid foundation for conversational AI applications requiring real-time interaction, context awareness, and scalable deployment. The modular architecture enables easy extension and customization for domain-specific applications.
+
+\section*{Source Code Repository}
+\url{https://github.com/IITJ-Projects/FMGen_Project.git}
 
 \section*{Acknowledgment}
 
