@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RAG Ingestion Dashboard</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        color: #333;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 40px;
+        color: white;
+      }
+
+      .header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+      }
+
+      .dashboard {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-bottom: 30px;
+      }
+
+      .card {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      .card h2 {
+        color: #4a5568;
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+        border-bottom: 2px solid #e2e8f0;
+        padding-bottom: 10px;
+      }
+
+      .upload-area {
+        border: 3px dashed #cbd5e0;
+        border-radius: 10px;
+        padding: 40px;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        background: #f7fafc;
+      }
+
+      .upload-area:hover,
+      .upload-area.dragover {
+        border-color: #667eea;
+        background: #edf2f7;
+      }
+
+      .upload-area i {
+        font-size: 3rem;
+        color: #a0aec0;
+        margin-bottom: 15px;
+        display: block;
+      }
+
+      .upload-area p {
+        color: #718096;
+        margin-bottom: 10px;
+      }
+
+      .upload-area .file-types {
+        font-size: 0.9rem;
+        color: #a0aec0;
+      }
+
+      #fileInput {
+        display: none;
+      }
+
+      .file-list {
+        max-height: 400px;
+        overflow-y: auto;
+      }
+
+      .file-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 15px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        background: #f7fafc;
+        transition: all 0.3s ease;
+      }
+
+      .file-item:hover {
+        background: #edf2f7;
+        border-color: #cbd5e0;
+      }
+
+      .file-info {
+        flex: 1;
+      }
+
+      .file-name {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 5px;
+      }
+
+      .file-size {
+        font-size: 0.9rem;
+        color: #718096;
+      }
+
+      .file-status {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .status-uploaded {
+        background: #c6f6d5;
+        color: #22543d;
+      }
+
+      .status-processing {
+        background: #fef5e7;
+        color: #744210;
+      }
+
+      .status-completed {
+        background: #bee3f8;
+        color: #2a4365;
+      }
+
+      .status-error {
+        background: #fed7d7;
+        color: #742a2a;
+      }
+
+      .file-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .btn {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+      }
+
+      .btn-primary {
+        background: #667eea;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #5a67d8;
+        transform: translateY(-1px);
+      }
+
+      .btn-success {
+        background: #48bb78;
+        color: white;
+      }
+
+      .btn-success:hover {
+        background: #38a169;
+      }
+
+      .btn-danger {
+        background: #f56565;
+        color: white;
+      }
+
+      .btn-danger:hover {
+        background: #e53e3e;
+      }
+
+      .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: #e2e8f0;
+        border-radius: 4px;
+        overflow: hidden;
+        margin: 10px 0;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+        width: 0%;
+        transition: width 0.3s ease;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-top: 30px;
+      }
+
+      .stat-card {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #667eea;
+        margin-bottom: 5px;
+      }
+
+      .stat-label {
+        color: #718096;
+        font-size: 0.9rem;
+      }
+
+      .health-status {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .status-indicator {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+      }
+
+      .status-healthy {
+        background: #48bb78;
+      }
+
+      .status-unhealthy {
+        background: #f56565;
+      }
+
+      .status-degraded {
+        background: #ed8936;
+      }
+
+      .loading {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #667eea;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 8px;
+        color: white;
+        font-weight: 600;
+        z-index: 1000;
+        transform: translateX(400px);
+        transition: transform 0.3s ease;
+      }
+
+      .notification.show {
+        transform: translateX(0);
+      }
+
+      .notification.success {
+        background: #48bb78;
+      }
+
+      .notification.error {
+        background: #f56565;
+      }
+
+      .notification.info {
+        background: #4299e1;
+      }
+
+      @media (max-width: 768px) {
+        .dashboard {
+          grid-template-columns: 1fr;
+        }
+
+        .header h1 {
+          font-size: 2rem;
+        }
+
+        .container {
+          padding: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🤖 RAG Ingestion Dashboard</h1>
+        <p>
+          Upload documents for intelligent text processing and embedding
+          generation
+        </p>
+      </div>
+
+      <div class="health-status">
+        <span class="status-indicator" id="ragStatus"></span>
+        <span>RAG Service: <span id="ragStatusText">Checking...</span></span>
+        <span class="status-indicator" id="llmStatus"></span>
+        <span>LLM Service: <span id="llmStatusText">Checking...</span></span>
+      </div>
+
+      <div class="dashboard">
+        <div class="card">
+          <h2>📁 Upload Documents</h2>
+          <div class="upload-area" id="uploadArea">
+            <i>📄</i>
+            <p>Drag and drop files here or click to browse</p>
+            <p class="file-types">Supported: PDF, DOCX, TXT (Max 50MB)</p>
+            <input
+              type="file"
+              id="fileInput"
+              multiple
+              accept=".pdf,.docx,.txt"
+            />
+          </div>
+          <div id="uploadProgress" style="display: none">
+            <div class="progress-bar">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p id="progressText">Uploading...</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>📋 File Management</h2>
+          <div class="file-list" id="fileList">
+            <p style="text-align: center; color: #a0aec0; padding: 20px">
+              No files uploaded yet
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-number" id="totalFiles">0</div>
+          <div class="stat-label">Total Files</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="processedFiles">0</div>
+          <div class="stat-label">Processed Files</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="totalChunks">0</div>
+          <div class="stat-label">Text Chunks</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="totalEmbeddings">0</div>
+          <div class="stat-label">Embeddings</div>
+        </div>
+      </div>
+
+      <div class="storage-info" style="margin-top: 30px">
+        <div class="card">
+          <h2>💾 Storage Management</h2>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              gap: 20px;
+              margin-bottom: 20px;
+            "
+          >
+            <div>
+              <h3>Storage Usage</h3>
+              <p>
+                <strong>Total Size:</strong> <span id="totalSize">0 MB</span>
+              </p>
+              <p><strong>File Types:</strong> <span id="fileTypes">-</span></p>
+              <p>
+                <strong>Retention:</strong>
+                <span id="retentionHours">24 hours</span>
+              </p>
+            </div>
+            <div>
+              <h3>Cleanup Settings</h3>
+              <p>
+                <strong>Auto Cleanup:</strong> Every
+                <span id="cleanupInterval">6 hours</span>
+              </p>
+              <p>
+                <strong>Max File Size:</strong>
+                <span id="maxFileSize">50 MB</span>
+              </p>
+              <button class="btn btn-primary" onclick="ui.manualCleanup()">
+                🧹 Manual Cleanup
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script>
+      class RAGIngestionUI {
+        constructor() {
+          this.files = [];
+          this.initializeEventListeners();
+          this.checkHealth();
+          this.loadFiles();
+        }
+
+        initializeEventListeners() {
+          const uploadArea = document.getElementById("uploadArea");
+          const fileInput = document.getElementById("fileInput");
+
+          uploadArea.addEventListener("click", () => fileInput.click());
+          uploadArea.addEventListener(
+            "dragover",
+            this.handleDragOver.bind(this)
+          );
+          uploadArea.addEventListener(
+            "dragleave",
+            this.handleDragLeave.bind(this)
+          );
+          uploadArea.addEventListener("drop", this.handleDrop.bind(this));
+          fileInput.addEventListener(
+            "change",
+            this.handleFileSelect.bind(this)
+          );
+        }
+
+        handleDragOver(e) {
+          e.preventDefault();
+          document.getElementById("uploadArea").classList.add("dragover");
+        }
+
+        handleDragLeave(e) {
+          e.preventDefault();
+          document.getElementById("uploadArea").classList.remove("dragover");
+        }
+
+        handleDrop(e) {
+          e.preventDefault();
+          document.getElementById("uploadArea").classList.remove("dragover");
+          const files = Array.from(e.dataTransfer.files);
+          this.uploadFiles(files);
+        }
+
+        handleFileSelect(e) {
+          const files = Array.from(e.target.files);
+          this.uploadFiles(files);
+        }
+
+        async uploadFiles(files) {
+          for (const file of files) {
+            if (this.validateFile(file)) {
+              await this.uploadFile(file);
+            }
+          }
+        }
+
+        validateFile(file) {
+          const allowedTypes = [".pdf", ".docx", ".txt"];
+          const fileExtension = "." + file.name.split(".").pop().toLowerCase();
+
+          if (!allowedTypes.includes(fileExtension)) {
+            this.showNotification(
+              `File type ${fileExtension} is not supported`,
+              "error"
+            );
+            return false;
+          }
+
+          if (file.size > 50 * 1024 * 1024) {
+            // 50MB limit
+            this.showNotification("File size exceeds 50MB limit", "error");
+            return false;
+          }
+
+          return true;
+        }
+
+        async uploadFile(file) {
+          const formData = new FormData();
+          formData.append("file", file);
+
+          try {
+            this.showUploadProgress(file.name);
+
+            const response = await fetch("/upload", {
+              method: "POST",
+              body: formData,
+            });
+
+            if (response.ok) {
+              const result = await response.json();
+              this.showNotification(
+                `File "${file.name}" uploaded successfully`,
+                "success"
+              );
+              this.addFileToList(result);
+              this.updateStats();
+            } else {
+              const error = await response.json();
+              this.showNotification(`Upload failed: ${error.detail}`, "error");
+            }
+          } catch (error) {
+            this.showNotification(`Upload failed: ${error.message}`, "error");
+          } finally {
+            this.hideUploadProgress();
+          }
+        }
+
+        showUploadProgress(filename) {
+          const progressDiv = document.getElementById("uploadProgress");
+          const progressText = document.getElementById("progressText");
+          progressDiv.style.display = "block";
+          progressText.textContent = `Uploading ${filename}...`;
+
+          // Simulate progress
+          let progress = 0;
+          const interval = setInterval(() => {
+            progress += Math.random() * 20;
+            if (progress >= 90) {
+              clearInterval(interval);
+              progress = 90;
+            }
+            document.getElementById("progressFill").style.width =
+              progress + "%";
+          }, 200);
+        }
+
+        hideUploadProgress() {
+          document.getElementById("uploadProgress").style.display = "none";
+          document.getElementById("progressFill").style.width = "0%";
+        }
+
+        addFileToList(fileData) {
+          const fileList = document.getElementById("fileList");
+
+          // Remove "no files" message if present
+          if (fileList.querySelector("p")) {
+            fileList.innerHTML = "";
+          }
+
+          const fileItem = document.createElement("div");
+          fileItem.className = "file-item";
+          fileItem.innerHTML = `
+                    <div class="file-info">
+                        <div class="file-name">${fileData.filename}</div>
+                        <div class="file-size">File ID: ${fileData.file_id}</div>
+                    </div>
+                    <div class="file-actions">
+                        <span class="file-status status-uploaded">Uploaded</span>
+                        <button class="btn btn-success" onclick="ui.processFile('${fileData.file_id}')">
+                            Process
+                        </button>
+                        <button class="btn btn-danger" onclick="ui.deleteFile('${fileData.file_id}')">
+                            Delete
+                        </button>
+                    </div>
+                `;
+
+          fileList.appendChild(fileItem);
+        }
+
+        async processFile(fileId) {
+          const fileItem = this.findFileItem(fileId);
+          if (!fileItem) return;
+
+          const processBtn = fileItem.querySelector(".btn-success");
+          const statusSpan = fileItem.querySelector(".file-status");
+
+          processBtn.disabled = true;
+          processBtn.innerHTML = '<span class="loading"></span>';
+          statusSpan.textContent = "Processing";
+          statusSpan.className = "file-status status-processing";
+
+          try {
+            const response = await fetch(`/process/${fileId}`, {
+              method: "POST",
+            });
+
+            if (response.ok) {
+              const result = await response.json();
+              statusSpan.textContent = "Completed";
+              statusSpan.className = "file-status status-completed";
+              this.showNotification(
+                `File processed successfully! Created ${result.chunks_created} chunks`,
+                "success"
+              );
+              this.updateStats();
+            } else {
+              const error = await response.json();
+              statusSpan.textContent = "Error";
+              statusSpan.className = "file-status status-error";
+              this.showNotification(
+                `Processing failed: ${error.detail}`,
+                "error"
+              );
+            }
+          } catch (error) {
+            statusSpan.textContent = "Error";
+            statusSpan.className = "file-status status-error";
+            this.showNotification(
+              `Processing failed: ${error.message}`,
+              "error"
+            );
+          } finally {
+            processBtn.disabled = false;
+            processBtn.textContent = "Process";
+          }
+        }
+
+        async deleteFile(fileId) {
+          if (!confirm("Are you sure you want to delete this file?")) return;
+
+          const fileItem = this.findFileItem(fileId);
+          if (!fileItem) return;
+
+          try {
+            const response = await fetch(`/files/${fileId}`, {
+              method: "DELETE",
+            });
+
+            if (response.ok) {
+              fileItem.remove();
+              this.showNotification("File deleted successfully", "success");
+              this.updateStats();
+
+              // Show "no files" message if list is empty
+              const fileList = document.getElementById("fileList");
+              if (fileList.children.length === 0) {
+                fileList.innerHTML =
+                  '<p style="text-align: center; color: #a0aec0; padding: 20px;">No files uploaded yet</p>';
+              }
+            } else {
+              this.showNotification("Failed to delete file", "error");
+            }
+          } catch (error) {
+            this.showNotification(`Delete failed: ${error.message}`, "error");
+          }
+        }
+
+        findFileItem(fileId) {
+          const fileItems = document.querySelectorAll(".file-item");
+          for (const item of fileItems) {
+            // Search in the entire item innerHTML to find the fileId in button onclick handlers
+            if (
+              item.innerHTML.includes(`processFile('${fileId}')`) ||
+              item.innerHTML.includes(`deleteFile('${fileId}')`)
+            ) {
+              return item;
+            }
+          }
+          return null;
+        }
+
+        async loadFiles() {
+          try {
+            const response = await fetch("/files");
+            if (response.ok) {
+              const data = await response.json();
+              this.files = data.files;
+              this.renderFileList();
+              this.updateStats();
+            }
+          } catch (error) {
+            console.error("Failed to load files:", error);
+          }
+        }
+
+        renderFileList() {
+          const fileList = document.getElementById("fileList");
+          fileList.innerHTML = "";
+
+          if (this.files.length === 0) {
+            fileList.innerHTML =
+              '<p style="text-align: center; color: #a0aec0; padding: 20px;">No files uploaded yet</p>';
+            return;
+          }
+
+          this.files.forEach((file) => {
+            // Extract file_id from filename format: {file_id}_{original_filename}
+            // UUID has format: 12345678-1234-1234-1234-123456789abc
+            // So we split by underscore and take first part
+            const parts = file.filename.split("_");
+            const fileId = parts[0];
+            // Original filename is everything after first underscore
+            const originalFilename = file.filename.substring(fileId.length + 1);
+
+            const fileItem = document.createElement("div");
+            fileItem.className = "file-item";
+            fileItem.innerHTML = `
+                        <div class="file-info">
+                            <div class="file-name">${originalFilename}</div>
+                            <div class="file-size">${this.formatFileSize(
+                              file.size
+                            )}</div>
+                        </div>
+                        <div class="file-actions">
+                            <span class="file-status status-uploaded">Uploaded</span>
+                            <button class="btn btn-success" onclick="ui.processFile('${fileId}')">
+                                Process
+                            </button>
+                            <button class="btn btn-danger" onclick="ui.deleteFile('${fileId}')">
+                                Delete
+                            </button>
+                        </div>
+                    `;
+            fileList.appendChild(fileItem);
+          });
+        }
+
+        formatFileSize(bytes) {
+          if (bytes === 0) return "0 Bytes";
+          const k = 1024;
+          const sizes = ["Bytes", "KB", "MB", "GB"];
+          const i = Math.floor(Math.log(bytes) / Math.log(k));
+          return (
+            parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
+          );
+        }
+
+        updateStats() {
+          document.getElementById("totalFiles").textContent = this.files.length;
+          // These would be updated based on actual processing results
+          document.getElementById("processedFiles").textContent = "0";
+          document.getElementById("totalChunks").textContent = "0";
+          document.getElementById("totalEmbeddings").textContent = "0";
+
+          // Update storage info
+          this.loadStorageInfo();
+        }
+
+        async loadStorageInfo() {
+          try {
+            const response = await fetch("/storage-info");
+            if (response.ok) {
+              const data = await response.json();
+              document.getElementById("totalSize").textContent =
+                data.total_size_mb + " MB";
+              document.getElementById("fileTypes").textContent =
+                Object.entries(data.file_types)
+                  .map(([ext, count]) => `${ext}: ${count}`)
+                  .join(", ") || "None";
+              document.getElementById("retentionHours").textContent =
+                data.retention_hours + " hours";
+              document.getElementById("cleanupInterval").textContent =
+                data.cleanup_interval_hours + " hours";
+              document.getElementById("maxFileSize").textContent =
+                data.max_upload_size_mb + " MB";
+            }
+          } catch (error) {
+            console.error("Failed to load storage info:", error);
+          }
+        }
+
+        async manualCleanup() {
+          if (
+            !confirm(
+              "This will delete all files older than the retention period. Continue?"
+            )
+          ) {
+            return;
+          }
+
+          const cleanupBtn = document.querySelector(
+            'button[onclick="ui.manualCleanup()"]'
+          );
+          const originalText = cleanupBtn.textContent;
+          cleanupBtn.disabled = true;
+          cleanupBtn.innerHTML = '<span class="loading"></span> Cleaning...';
+
+          try {
+            const response = await fetch("/cleanup", { method: "POST" });
+            if (response.ok) {
+              this.showNotification(
+                "Cleanup completed successfully",
+                "success"
+              );
+              this.loadFiles();
+              this.loadStorageInfo();
+            } else {
+              const error = await response.json();
+              this.showNotification(`Cleanup failed: ${error.detail}`, "error");
+            }
+          } catch (error) {
+            this.showNotification(`Cleanup failed: ${error.message}`, "error");
+          } finally {
+            cleanupBtn.disabled = false;
+            cleanupBtn.textContent = originalText;
+          }
+        }
+
+        async checkHealth() {
+          try {
+            const response = await fetch("/health");
+            if (response.ok) {
+              const health = await response.json();
+              this.updateHealthStatus(health);
+            }
+          } catch (error) {
+            console.error("Health check failed:", error);
+            this.updateHealthStatus({
+              status: "unreachable",
+              rag_service: "unreachable",
+              llm_service: "unreachable",
+            });
+          }
+        }
+
+        updateHealthStatus(health) {
+          const ragStatus = document.getElementById("ragStatus");
+          const ragStatusText = document.getElementById("ragStatusText");
+          const llmStatus = document.getElementById("llmStatus");
+          const llmStatusText = document.getElementById("llmStatusText");
+
+          // Update RAG service status
+          ragStatus.className = `status-indicator status-${
+            health.rag_service === "healthy" ? "healthy" : "unhealthy"
+          }`;
+          ragStatusText.textContent = health.rag_service;
+
+          // Update LLM service status
+          llmStatus.className = `status-indicator status-${
+            health.llm_service === "healthy" ? "healthy" : "unhealthy"
+          }`;
+          llmStatusText.textContent = health.llm_service;
+        }
+
+        showNotification(message, type = "info") {
+          const notification = document.getElementById("notification");
+          notification.textContent = message;
+          notification.className = `notification ${type}`;
+          notification.classList.add("show");
+
+          setTimeout(() => {
+            notification.classList.remove("show");
+          }, 5000);
+        }
+      }
+
+      // Initialize the UI when the page loads
+      let ui;
+      document.addEventListener("DOMContentLoaded", () => {
+        ui = new RAGIngestionUI();
+      });
+    </script>
+  </body>
+</html>

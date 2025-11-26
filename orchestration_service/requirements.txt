@@ -1,0 +1,11 @@
+fastapi>=0.111.0,<0.112.0
+starlette>=0.27.0,<0.39.0
+anyio==4.4.0
+uvicorn[standard]==0.30.3
+pydantic==2.7.2
+httpx==0.27.2
+aiofiles==23.2.1
+python-multipart==0.0.7
+vocode==0.1.114a2
+# WebRTC support
+aiortc>=1.6.0
