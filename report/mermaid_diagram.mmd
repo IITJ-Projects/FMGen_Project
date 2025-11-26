@@ -1,0 +1,40 @@
+graph LR
+    subgraph Frontend["<b>Frontend</b> <i>Port: 8080</i>"]
+        direction LR
+        WebRTC["<b>WebRTC</b><br/><i>&lt;100ms</i>"]
+        WebSocket["<b>WebSocket</b><br/><i>Fallback</i>"]
+        VoiceUI["<b>Voice UI</b><br/><i>VAD + UI</i>"]
+    end
+    
+    Orchestration["<b>Orchestration</b><br/><i>Port: 8000</i><br/><i>WebRTC + WS</i>"]
+    
+    subgraph Services["<b>Core Services</b>"]
+        direction LR
+        ASR["<b>ASR</b><br/><i>faster-whisper</i><br/><i>Port: 8001</i>"]
+        LLM["<b>LLM</b><br/><i>LLaMA-3-8B</i><br/><i>Port: 8002</i>"]
+        TTS["<b>TTS</b><br/><i>MeloTTS</i><br/><i>Port: 8003</i>"]
+    end
+    
+    RAG["<b>RAG</b><br/><i>Port: 8004</i>"]
+    Qdrant["<b>Qdrant DB</b><br/><i>Port: 6333</i>"]
+    
+    Frontend --> Orchestration
+    Orchestration --> ASR
+    Orchestration --> LLM
+    Orchestration --> TTS
+    ASR --> RAG
+    LLM --> RAG
+    TTS --> RAG
+    RAG --> Qdrant
+    
+    style Frontend fill:#e1f5ff,stroke:#01579b,stroke-width:3px,color:#000
+    style Orchestration fill:#fff3e0,stroke:#e65100,stroke-width:3px,color:#000
+    style ASR fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000
+    style LLM fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000
+    style TTS fill:#fce4ec,stroke:#880e4f,stroke-width:2px,color:#000
+    style RAG fill:#fff9c4,stroke:#f57f17,stroke-width:2px,color:#000
+    style Qdrant fill:#e0f2f1,stroke:#004d40,stroke-width:2px,color:#000
+    style WebRTC fill:#e3f2fd,stroke:#0d47a1,stroke-width:1px,color:#000
+    style WebSocket fill:#e3f2fd,stroke:#0d47a1,stroke-width:1px,color:#000
+    style VoiceUI fill:#e3f2fd,stroke:#0d47a1,stroke-width:1px,color:#000
+

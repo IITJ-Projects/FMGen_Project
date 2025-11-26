@@ -46,6 +46,13 @@ Zevo AI employs a microservices architecture with five core services: Orchestrat
 
 The system follows a pipeline architecture where user text input flows through: Frontend $\rightarrow$ Orchestration Service $\rightarrow$ RAG Service $\rightarrow$ LLM Service $\rightarrow$ Frontend, with optional TTS synthesis when requested by the user.
 
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=\textwidth]{figers/archtecture.png}
+\caption{System Architecture Diagram showing the microservices architecture with Frontend (Port 8080), Orchestration Service (Port 8000), Core Services (ASR Port 8001, LLM Port 8002, TTS Port 8003), RAG Service (Port 8004), and Qdrant Database (Port 6333).}
+\label{fig:architecture}
+\end{figure*}
+
 \subsection{Service Components}
 
 \subsubsection{Orchestration Service}

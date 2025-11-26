@@ -1,6 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1764125458.09612 "/Users/apple/Documents/ZevoCode/zevo-ai/report/report_template.tex" "report_template.pdf" "report_template" 1764125458.57017 0
-  "/Users/apple/Documents/ZevoCode/zevo-ai/report/report_template.tex" 1764125457.0267 16244 1007d9cee175e10df9270ea678ab2bba ""
+["pdflatex"] 1764148016.83803 "/Users/apple/Documents/IITJ/FoundationModelsAndGenAI/FMGen_Project/report/report_template.tex" "report_template.pdf" "report_template" 1764148017.40008 0
+  "/Users/apple/Documents/IITJ/FoundationModelsAndGenAI/FMGen_Project/report/report_template.tex" 1764148015.80342 16632 bce642b2f66bdc765170b0dc063cf7e8 ""
   "/usr/local/texlive/2024/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2024/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2024/texmf-dist/fonts/tfm/adobe/courier/pcrr7t.tfm" 1136768653 960 379cc0019370a9e0208a0a3f949f847a ""
@@ -69,8 +69,9 @@
   "/usr/local/texlive/2024/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1738287952.47494 5467645 128b85b7cde5f5edc5cb7f1dd7ff8736 ""
   "/usr/local/texlive/2024/texmf-var/web2c/pdftex/pdflatex.fmt" 1738287947 8221424 6ba68504d74236209be57acccdba3a63 ""
   "/usr/local/texlive/2024/texmf.cnf" 1710266656 577 e590dabc9e28c5b61546e15f63eebcdf ""
-  "report_template.aux" 1764125458.5283 4819 83ef9d377d80f548bef4218f9f54d9ed "pdflatex"
-  "report_template.tex" 1764125457.0267 16244 1007d9cee175e10df9270ea678ab2bba ""
+  "figers/archtecture.png" 1764147944.35121 163103 c78c9b36fb1e19a59a917aaa38ab3006 ""
+  "report_template.aux" 1764148017.3548 5211 ad2f37e8ab077cf91f800a906d9df10c "pdflatex"
+  "report_template.tex" 1764148015.80342 16632 bce642b2f66bdc765170b0dc063cf7e8 ""
   (generated)
   "report_template.aux"
   "report_template.log"
