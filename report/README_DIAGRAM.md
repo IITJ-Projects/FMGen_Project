@@ -41,3 +41,4 @@ chmod +x generate_diagram.sh
 
 Once `architecture_diagram.png` is created, the LaTeX report will automatically include it when compiled.
 
+
