@@ -64,24 +64,26 @@ This project includes comprehensive documentation organized in the [`Docs/`](Doc
 ## Architecture
 
 ```mermaid
-graph TB
-    subgraph Frontend["<b>Frontend</b><br/><i>Port: 8080</i>"]
-        WebRTC["<b>WebRTC</b><br/><i>&lt;100ms latency</i>"]
+graph LR
+    subgraph Frontend["<b>Frontend</b> <i>Port: 8080</i>"]
+        direction LR
+        WebRTC["<b>WebRTC</b><br/><i>&lt;100ms</i>"]
         WebSocket["<b>WebSocket</b><br/><i>Fallback</i>"]
         VoiceUI["<b>Voice UI</b><br/><i>VAD + UI</i>"]
     end
-    
-    Orchestration["<b>Orchestration Service</b><br/><i>Port: 8000</i><br/><i>WebRTC + WebSocket</i>"]
-    
+
+    Orchestration["<b>Orchestration</b><br/><i>Port: 8000</i><br/><i>WebRTC + WS</i>"]
+
     subgraph Services["<b>Core Services</b>"]
-        ASR["<b>ASR Service</b><br/><i>faster-whisper</i><br/><i>Port: 8001</i><br/><i>Streaming</i>"]
-        LLM["<b>LLM Service</b><br/><i>LLaMA-3-8B</i><br/><i>Port: 8002</i><br/><i>Streaming</i>"]
-        TTS["<b>TTS Service</b><br/><i>MeloTTS</i><br/><i>Port: 8003</i><br/><i>Opus + VAD</i>"]
+        direction LR
+        ASR["<b>ASR</b><br/><i>faster-whisper</i><br/><i>Port: 8001</i>"]
+        LLM["<b>LLM</b><br/><i>LLaMA-3-8B</i><br/><i>Port: 8002</i>"]
+        TTS["<b>TTS</b><br/><i>MeloTTS</i><br/><i>Port: 8003</i>"]
     end
-    
-    RAG["<b>RAG Service</b><br/><i>Port: 8004</i>"]
+
+    RAG["<b>RAG</b><br/><i>Port: 8004</i>"]
     Qdrant["<b>Qdrant DB</b><br/><i>Port: 6333</i>"]
-    
+
     Frontend --> Orchestration
     Orchestration --> ASR
     Orchestration --> LLM
@@ -90,7 +92,7 @@ graph TB
     LLM --> RAG
     TTS --> RAG
     RAG --> Qdrant
-    
+
     style Frontend fill:#e1f5ff,stroke:#01579b,stroke-width:3px,color:#000
     style Orchestration fill:#fff3e0,stroke:#e65100,stroke-width:3px,color:#000
     style ASR fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000
