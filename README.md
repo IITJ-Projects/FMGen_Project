@@ -2,7 +2,7 @@
 
 A cutting-edge conversational AI agent with **ultra-low latency streaming**, **real-time voice interaction**, and **emotionally intelligent responses**. Built with industry-standard technologies for production deployment.
 
-## 📚 Documentation
+## Documentation
 
 This project includes comprehensive documentation organized in the [`Docs/`](Docs/) folder:
 
@@ -24,7 +24,7 @@ This project includes comprehensive documentation organized in the [`Docs/`](Doc
 - [Project Proposal](Docs/Development/PROJECT_PROPOSAL.md) - Original project proposal and objectives
 - [RAG Ingestion App](rag_ingestion_app/README.md) - RAG ingestion application documentation
 
-## 🚀 Key Features
+## Key Features
 
 ### **Dual-Mode Interface**
 
@@ -61,47 +61,49 @@ This project includes comprehensive documentation organized in the [`Docs/`](Doc
 - **Scalable Design**: Containerized microservices
 - **Comprehensive Monitoring**: Latency tracking and performance analytics
 
-## 🏗️ Architecture
+## Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        Frontend (Port 8080)                    │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐ │
-│  │   WebRTC        │  │   WebSocket     │  │   Voice UI      │ │
-│  │   (<100ms)      │  │   (Fallback)    │  │   (VAD + UI)    │ │
-│  └─────────────────┘  └─────────────────┘  └─────────────────┘ │
-└─────────────────────────────────────────────────────────────────┘
-                                │
-                    ┌─────────────────┐
-                    │ Orchestration   │
-                    │   Service       │
-                    │   Port: 8000    │
-                    │ (WebRTC + WS)   │
-                    └─────────────────┘
-                                │
-        ┌───────────────────────┼───────────────────────┐
-        │                       │                       │
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   ASR Service   │    │   LLM Service   │    │   TTS Service   │
-│ (faster-whisper)│    │ (LLaMA-3-8B)    │    │   (MeloTTS)     │
-│   Port: 8001    │    │   Port: 8002    │    │   Port: 8003    │
-│  (Streaming)    │    │  (Streaming)    │    │ (Opus + VAD)    │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-         │                       │                       │
-         └───────────────────────┼───────────────────────┘
-                                 │
-                    ┌─────────────────┐
-                    │   RAG Service   │
-                    │   Port: 8004    │
-                    └─────────────────┘
-                                 │
-                    ┌─────────────────┐
-                    │   Qdrant DB     │
-                    │   Port: 6333    │
-                    └─────────────────┘
+```mermaid
+graph TB
+    subgraph Frontend["<b>Frontend</b><br/><i>Port: 8080</i>"]
+        WebRTC["<b>WebRTC</b><br/><i>&lt;100ms latency</i>"]
+        WebSocket["<b>WebSocket</b><br/><i>Fallback</i>"]
+        VoiceUI["<b>Voice UI</b><br/><i>VAD + UI</i>"]
+    end
+    
+    Orchestration["<b>Orchestration Service</b><br/><i>Port: 8000</i><br/><i>WebRTC + WebSocket</i>"]
+    
+    subgraph Services["<b>Core Services</b>"]
+        ASR["<b>ASR Service</b><br/><i>faster-whisper</i><br/><i>Port: 8001</i><br/><i>Streaming</i>"]
+        LLM["<b>LLM Service</b><br/><i>LLaMA-3-8B</i><br/><i>Port: 8002</i><br/><i>Streaming</i>"]
+        TTS["<b>TTS Service</b><br/><i>MeloTTS</i><br/><i>Port: 8003</i><br/><i>Opus + VAD</i>"]
+    end
+    
+    RAG["<b>RAG Service</b><br/><i>Port: 8004</i>"]
+    Qdrant["<b>Qdrant DB</b><br/><i>Port: 6333</i>"]
+    
+    Frontend --> Orchestration
+    Orchestration --> ASR
+    Orchestration --> LLM
+    Orchestration --> TTS
+    ASR --> RAG
+    LLM --> RAG
+    TTS --> RAG
+    RAG --> Qdrant
+    
+    style Frontend fill:#e1f5ff,stroke:#01579b,stroke-width:3px,color:#000
+    style Orchestration fill:#fff3e0,stroke:#e65100,stroke-width:3px,color:#000
+    style ASR fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000
+    style LLM fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000
+    style TTS fill:#fce4ec,stroke:#880e4f,stroke-width:2px,color:#000
+    style RAG fill:#fff9c4,stroke:#f57f17,stroke-width:2px,color:#000
+    style Qdrant fill:#e0f2f1,stroke:#004d40,stroke-width:2px,color:#000
+    style WebRTC fill:#e3f2fd,stroke:#0d47a1,stroke-width:1px,color:#000
+    style WebSocket fill:#e3f2fd,stroke:#0d47a1,stroke-width:1px,color:#000
+    style VoiceUI fill:#e3f2fd,stroke:#0d47a1,stroke-width:1px,color:#000
 ```
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 ### **Core Services**
 
@@ -125,7 +127,7 @@ This project includes comprehensive documentation organized in the [`Docs/`](Doc
 - **30ms Chunks**: Real-time streaming
 - **Gapless Playback**: Seamless audio continuity
 
-## 📋 Prerequisites
+## Prerequisites
 
 ### **System Requirements**
 
@@ -143,7 +145,7 @@ This project includes comprehensive documentation organized in the [`Docs/`](Doc
 - **NVIDIA Docker**: nvidia-docker2
 - **NVIDIA Drivers**: 550+ (recommended for CUDA 12.6)
 
-## 🚀 Quick Start
+## Quick Start
 
 ### **1. Clone and Setup**
 
@@ -184,30 +186,30 @@ docker compose ps
 - **API Docs**: http://localhost:8000/docs
 - **Health Check**: http://localhost:8000/health
 
-## 🎯 Performance Optimizations
+## Performance Optimizations
 
 ### **Phase 1: Audio Format Optimization**
 
-- ✅ **Opus Codec**: 90% bandwidth reduction
-- ✅ **16kHz Sample Rate**: Speech-optimized
-- ✅ **30ms Chunks**: Real-time streaming
-- ✅ **Voice Activity Detection**: WebRTC VAD
+- **Opus Codec**: 90% bandwidth reduction
+- **16kHz Sample Rate**: Speech-optimized
+- **30ms Chunks**: Real-time streaming
+- **Voice Activity Detection**: WebRTC VAD
 
 ### **Phase 2: Advanced Streaming**
 
-- ✅ **WebRTC**: Ultra-low latency (<100ms)
-- ✅ **Adaptive Buffering**: Network-optimized
-- ✅ **WebSocket Fallback**: Compatibility
-- ✅ **Echo Cancellation**: Built-in WebRTC
+- **WebRTC**: Ultra-low latency (<100ms)
+- **Adaptive Buffering**: Network-optimized
+- **WebSocket Fallback**: Compatibility
+- **Echo Cancellation**: Built-in WebRTC
 
 ### **Phase 3: Voice Assistant Features**
 
-- ✅ **Real-time VAD**: Speech detection
-- ✅ **Interruption Handling**: Natural flow
-- ✅ **Emotional Adaptation**: 5 tone states
-- ✅ **Context Awareness**: Smart responses
+- **Real-time VAD**: Speech detection
+- **Interruption Handling**: Natural flow
+- **Emotional Adaptation**: 5 tone states
+- **Context Awareness**: Smart responses
 
-## 📊 Performance Monitoring
+## Performance Monitoring
 
 ### **Latency Tracking**
 
@@ -232,7 +234,7 @@ curl http://localhost:8003/health  # TTS
 curl http://localhost:8004/health  # RAG
 ```
 
-## 🔧 Configuration
+## Configuration
 
 ### **Environment Variables**
 
@@ -258,7 +260,7 @@ VAD_ENABLED=true
 - **Medium Quality**: 8 kbps Opus, 16kHz, 40ms chunks
 - **Low Latency**: 16 kbps Opus, 16kHz, 20ms chunks
 
-## 🎤 Voice Assistant Features
+## Voice Assistant Features
 
 ### **Real-time Interaction**
 
@@ -278,7 +280,7 @@ VAD_ENABLED=true
 - **Echo Cancellation**: Built-in WebRTC processing
 - **Noise Suppression**: Automatic audio enhancement
 
-## 🔌 API Endpoints
+## API Endpoints
 
 ### **Core Endpoints**
 
@@ -299,7 +301,7 @@ VAD_ENABLED=true
 - `GET /api/performance` - Performance statistics
 - `GET /conversation/{session_id}/history` - Chat history
 
-## 🐳 Docker Services
+## Docker Services
 
 ### **Service Ports**
 
@@ -326,7 +328,7 @@ frontend-app:
     - orchestration-service
 ```
 
-## 🐳 Docker Commands
+## Docker Commands
 
 ### **Service Management**
 
@@ -680,7 +682,7 @@ docker compose logs -f orchestration-service
 
 ```
 
-## 🚨 Troubleshooting
+## Troubleshooting
 
 ### **Common Issues**
 
@@ -797,7 +799,7 @@ export USE_OPUS=true
 export BITRATE=32
 ```
 
-## 📈 Performance Benchmarks
+## Performance Benchmarks
 
 ### **Latency Targets**
 
@@ -818,7 +820,7 @@ export BITRATE=32
 - **RAM**: 64GB+ recommended
 - **CPU**: 25+ vCPUs for optimal performance
 
-## 🔒 Security Considerations
+## Security Considerations
 
 ### **Network Security**
 
@@ -832,7 +834,7 @@ export BITRATE=32
 - **Session Management**: Secure session handling
 - **Audio Processing**: Local processing only
 
-## 🤝 Contributing
+## Contributing
 
 ### **Development Setup**
 
@@ -855,7 +857,7 @@ docker compose exec orchestration-service python -m pytest
 - **Docker**: Multi-stage builds
 - **Documentation**: Comprehensive docstrings
 
-## 🔍 Debugging Streaming
+## Debugging Streaming
 
 ### Verifying Real-Time Streaming Across Services
 
@@ -863,12 +865,12 @@ The system includes comprehensive logging to track streaming flow at each layer.
 
 #### Log Markers
 
-**LLM Service** (🔵):
+**LLM Service**:
 
 - `[STREAM-OUT]` - Each token emitted with timestamp and preview
 - `[STREAM-COMPLETE]` - Stream completion with total tokens
 
-**Orchestrator** (🟡/🟢):
+**Orchestrator**:
 
 - `[ORCH-STREAM-START]` - Streaming session started
 - `[ORCH-FIRST-TOKEN]` - Time to first token (TTF) measurement
@@ -924,11 +926,11 @@ docker compose logs -f zevo-llm zevo-orchestration | grep -E "STREAM-OUT|ORCH-RE
 - `[ORCH-SLOW-FORWARD]` warnings appear frequently
 - Tokens arrive in bursts rather than continuously
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **OpenAI**: For LLaMA-3 model
 - **Hugging Face**: For model hosting
@@ -938,7 +940,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ---
 
-**Built with ❤️ for production-grade voice AI**
+**Built for production-grade voice AI**
 
 git add .
 git status
@@ -962,26 +964,26 @@ docker-compose logs -f orchestration-service
 1. **Monitor orchestration service logs while chatting:**
 
    ```bash
-   docker-compose logs -f orchestration-service | grep -E "RAG|🔍"
+   docker-compose logs -f orchestration-service | grep -E "RAG"
    ```
 
 2. **Look for these log messages when you send a text chat message:**
 
    ```
-   🔍 RAG: Retrieving context for query: 'your question'
-   🔍 RAG: ✅ Retrieved X relevant documents
-   🔍 RAG: 📄 Document count in response: X
-   🔍 RAG: 📝 Top document preview: ...
-   📚 Context: Added RAG context (XXX chars) to LLM prompt
+   RAG: Retrieving context for query: 'your question'
+   RAG: Retrieved X relevant documents
+   RAG: Document count in response: X
+   RAG: Top document preview: ...
+   Context: Added RAG context (XXX chars) to LLM prompt
    ```
 
 3. **If RAG is NOT working, you'll see:**
    ```
-   🔍 RAG: ⚠️ No relevant documents found for query
+   RAG: No relevant documents found for query
    ```
    or
    ```
-   🔍 RAG: ❌ Error retrieving context
+   RAG: Error retrieving context
    ```
 
 ### Method 2: Test with Your Ingested Document
@@ -1002,7 +1004,7 @@ docker-compose logs -f orchestration-service
    ```
 
 3. **You should see:**
-   - **Orchestration**: `🔍 RAG: ✅ Retrieved X relevant documents`
+   - **Orchestration**: `RAG: Retrieved X relevant documents`
    - **RAG Service**: `Retrieved X documents from search`
 
 ### Method 3: Check Document Count in Qdrant
@@ -1042,7 +1044,7 @@ If this returns documents, RAG is working. If not, check ingestion.
 **With RAG (after fix):**
 
 - Responses include information from your ingested PDFs
-- Logs show "🔍 RAG: ✅ Retrieved X relevant documents"
+- Logs show "RAG: Retrieved X relevant documents"
 - Context is added to LLM prompt
 
 # Working fine
