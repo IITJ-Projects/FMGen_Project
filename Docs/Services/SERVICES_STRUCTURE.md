@@ -41,7 +41,7 @@ zevo-ai/
     └── reranker/                   # Reranker models
 ```
 
-## 🔧 Service Details
+## Service Details
 
 ### 1. ASR Service (Port 8001)
 
@@ -55,12 +55,12 @@ zevo-ai/
 
 **Features**:
 
-- ✅ Audio file upload (multipart)
-- ✅ Multiple audio formats support
-- ✅ Language detection
-- ✅ Confidence scoring
-- ✅ Model caching
-- ✅ Error handling
+- Audio file upload (multipart)
+- Multiple audio formats support
+- Language detection
+- Confidence scoring
+- Model caching
+- Error handling
 
 ### 2. TTS Service (Port 8003)
 
@@ -75,12 +75,12 @@ zevo-ai/
 
 **Features**:
 
-- ✅ Text-to-speech synthesis
-- ✅ Streaming audio support
-- ✅ Multiple voice options
-- ✅ Speed control
-- ✅ Fallback to gTTS
-- ✅ Audio format conversion
+- Text-to-speech synthesis
+- Streaming audio support
+- Multiple voice options
+- Speed control
+- Fallback to gTTS
+- Audio format conversion
 
 ### 3. Orchestration Service (Port 8000)
 
@@ -101,12 +101,12 @@ Audio Input → ASR → RAG → LLM → TTS → Audio Output
 
 **Features**:
 
-- ✅ Complete pipeline orchestration
-- ✅ Session management
-- ✅ Service health monitoring
-- ✅ Conversation history
-- ✅ Error handling and fallbacks
-- ✅ Background task processing
+- Complete pipeline orchestration
+- Session management
+- Service health monitoring
+- Conversation history
+- Error handling and fallbacks
+- Background task processing
 
 ### 4. LLM Service (Port 8002)
 
@@ -122,13 +122,13 @@ Audio Input → ASR → RAG → LLM → TTS → Audio Output
 
 **Features**:
 
-- ✅ vLLM high-throughput inference
-- ✅ LLaMA-3-8B-Instruct model support
-- ✅ AWQ quantization for efficiency
-- ✅ Streaming token generation
-- ✅ OpenAI-compatible API
-- ✅ Configurable sampling parameters
-- ✅ GPU memory optimization
+- vLLM high-throughput inference
+- LLaMA-3-8B-Instruct model support
+- AWQ quantization for efficiency
+- Streaming token generation
+- OpenAI-compatible API
+- Configurable sampling parameters
+- GPU memory optimization
 
 ### 5. RAG Service (Port 8004)
 
@@ -145,15 +145,15 @@ Audio Input → ASR → RAG → LLM → TTS → Audio Output
 
 **Features**:
 
-- ✅ Qdrant vector database integration
-- ✅ Sentence transformers embeddings
-- ✅ BGE reranker for improved relevance
-- ✅ Document ingestion and management
-- ✅ Configurable search parameters
-- ✅ Score threshold filtering
-- ✅ Metadata support
+- Qdrant vector database integration
+- Sentence transformers embeddings
+- BGE reranker for improved relevance
+- Document ingestion and management
+- Configurable search parameters
+- Score threshold filtering
+- Metadata support
 
-## 🚀 Deployment
+## Deployment
 
 ### 1. Build Docker Images
 
@@ -232,7 +232,7 @@ Each service provides `/health` endpoint:
 }
 ```
 
-## 📊 Monitoring
+## Monitoring
 
 ### Logs
 
@@ -246,7 +246,7 @@ Each service provides `/health` endpoint:
 - Automatic restart on failure
 - Health status aggregation
 
-## 🔒 Security
+## Security
 
 ### Production Considerations
 
@@ -263,7 +263,7 @@ Each service provides `/health` endpoint:
 - Log levels
 - Performance settings
 
-## 🎯 Next Steps
+## Next Steps
 
 1. **Add Dockerfiles** - Container definitions for each service
 2. **Implement Authentication** - User management and security
@@ -272,7 +272,7 @@ Each service provides `/health` endpoint:
 5. **Add Model Management** - Model versioning and updates
 6. **Implement Caching** - Redis for session and response caching
 
-## 📝 Notes
+## Notes
 
 - All services are production-ready with proper error handling
 - Async/await patterns used throughout for performance

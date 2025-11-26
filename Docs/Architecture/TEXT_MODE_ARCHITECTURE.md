@@ -1,6 +1,6 @@
 # Zevo AI - Text Mode Architecture Block Diagram
 
-## 🏗️ High-Level Architecture for Text Mode
+## High-Level Architecture for Text Mode
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -9,7 +9,7 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## 📱 Frontend Layer
+## Frontend Layer
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -29,7 +29,7 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## 🔄 Communication Layer
+## Communication Layer
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -48,7 +48,7 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## 🎯 Core Services Layer
+## Core Services Layer
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -80,7 +80,7 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## 🔄 Text Mode Processing Flow
+## Text Mode Processing Flow
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -145,7 +145,7 @@
 - **Markdown Rendering**: Formatted responses with proper Markdown display
 - **Adaptive Responses**: Dynamic response length based on user intent
 
-## 📊 Complete Data Flow with Service Interactions
+## Complete Data Flow with Service Interactions
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -253,7 +253,7 @@
 │  │  • { "type": "complete", "response": "Full text", "latency_report": {...} }│ │
 │  └─────────────────────────────────────────────────────────────────────────────┘ │
 │                                                                                 │
-│  🎯 ORCHESTRATION ↔ LLM SERVICE:                                              │
+│  ORCHESTRATION ↔ LLM SERVICE:                                              │
 │  ┌─────────────────────────────────────────────────────────────────────────────┐ │
 │  │  Protocol: HTTP POST (http://llm-service:8002/generate_stream)             │ │
 │  │  Content-Type: application/json                                            │ │
@@ -274,7 +274,7 @@
 │  │  • { "token": "", "finished": true }                                        │ │
 │  └─────────────────────────────────────────────────────────────────────────────┘ │
 │                                                                                 │
-│  🎯 ORCHESTRATION ↔ TTS SERVICE:                                               │
+│  ORCHESTRATION ↔ TTS SERVICE:                                               │
 │  ┌─────────────────────────────────────────────────────────────────────────────┐ │
 │  │  Protocol: HTTP POST (http://tts-service:8003/speak_stream)                │ │
 │  │  Content-Type: application/json                                            │ │
@@ -298,7 +298,7 @@
 │  │  • Format: WAV, 22,050 Hz, 16-bit, Mono                                   │ │
 │  └─────────────────────────────────────────────────────────────────────────────┘ │
 │                                                                                 │
-│  🎯 ORCHESTRATION ↔ RAG SERVICE:                                               │
+│  ORCHESTRATION ↔ RAG SERVICE:                                               │
 │  ┌─────────────────────────────────────────────────────────────────────────────┐ │
 │  │  Protocol: HTTP POST (http://rag-service:8004/retrieve)                    │ │
 │  │  Content-Type: application/json                                            │ │
@@ -324,7 +324,7 @@
 │  │  }                                                                          │ │
 │  └─────────────────────────────────────────────────────────────────────────────┘ │
 │                                                                                 │
-│  🎯 RAG SERVICE ↔ QDRANT DB:                                                   │
+│  RAG SERVICE ↔ QDRANT DB:                                                   │
 │  ┌─────────────────────────────────────────────────────────────────────────────┐ │
 │  │  Protocol: HTTP POST (http://qdrant-db:6333/collections/{collection}/points/search)│ │
 │  │  Content-Type: application/json                                            │ │
@@ -353,7 +353,7 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## 🔧 Service Communication Matrix
+## Service Communication Matrix
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -418,7 +418,7 @@
 │  │  Features: Streaming, batch processing, GPU acceleration                  │ │
 │  └─────────────────────────────────────────────────────────────────────────────┘ │
 │                                                                                 │
-│  🔍 EMBEDDING MODELS (RAG Service)                                             │
+│  EMBEDDING MODELS (RAG Service)                                             │
 │  ┌─────────────────────────────────────────────────────────────────────────────┐ │
 │  │  English Embeddings: BGE-Large-EN-v1.5                                    │ │
 │  │  • Dimensions: 1,024                                                       │ │
@@ -486,7 +486,7 @@
 │  │  • error: { message: "Error description", code: "ERROR_CODE" }             │ │
 │  └─────────────────────────────────────────────────────────────────────────────┘ │
 │                                                                                 │
-│  🎯 ORCHESTRATION → LLM SERVICE (HTTP)                                        │
+│  ORCHESTRATION → LLM SERVICE (HTTP)                                        │
 │  ┌─────────────────────────────────────────────────────────────────────────────┐ │
 │  │  Request: POST http://llm-service:8002/generate_stream                     │ │
 │  │  Body: {                                                                   │ │
@@ -502,7 +502,7 @@
 │  │  • { "token": "", "finished": true }                                       │ │
 │  └─────────────────────────────────────────────────────────────────────────────┘ │
 │                                                                                 │
-│  🎯 ORCHESTRATION → TTS SERVICE (HTTP)                                        │
+│  ORCHESTRATION → TTS SERVICE (HTTP)                                        │
 │  ┌─────────────────────────────────────────────────────────────────────────────┐ │
 │  │  Request: POST http://tts-service:8003/speak_stream                        │ │
 │  │  Body: {                                                                   │ │
@@ -521,7 +521,7 @@
 │  │  • Format: WAV, 22,050 Hz, 16-bit, Mono                                   │ │
 │  └─────────────────────────────────────────────────────────────────────────────┘ │
 │                                                                                 │
-│  🎯 ORCHESTRATION → RAG SERVICE (HTTP)                                        │
+│  ORCHESTRATION → RAG SERVICE (HTTP)                                        │
 │  ┌─────────────────────────────────────────────────────────────────────────────┐ │
 │  │  Request: POST http://rag-service:8004/retrieve                            │ │
 │  │  Body: {                                                                   │ │
@@ -541,7 +541,7 @@
 │  │  }                                                                          │ │
 │  └─────────────────────────────────────────────────────────────────────────────┘ │
 │                                                                                 │
-│  🎯 RAG SERVICE → QDRANT DB (HTTP)                                            │
+│  RAG SERVICE → QDRANT DB (HTTP)                                            │
 │  ┌─────────────────────────────────────────────────────────────────────────────┐ │
 │  │  Request: POST http://qdrant-db:6333/collections/{collection}/points/search│ │
 │  │  Body: {                                                                   │ │
@@ -564,31 +564,31 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## 🎯 Key Features & Capabilities
+## Key Features & Capabilities
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                            KEY FEATURES & CAPABILITIES                         │
 ├─────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                 │
-│  ✅ REAL-TIME PROCESSING                                                        │
+│  REAL-TIME PROCESSING                                                        │
 │  • Streaming LLM tokens (real-time text generation)                            │
 │  • Streaming TTS chunks (real-time audio playback)                            │
 │  • WebSocket communication (low latency)                                       │
 │                                                                                 │
-│  ✅ HIGH-QUALITY AUDIO                                                         │
+│  HIGH-QUALITY AUDIO                                                         │
 │  • 22,050 Hz sample rate (CD quality)                                         │
 │  • 64 kbps bitrate (high quality)                                             │
 │  • WAV format (uncompressed, clear audio)                                     │
 │  • 100ms chunks (smooth playback)                                             │
 │                                                                                 │
-│  ✅ INTELLIGENT CONTEXT                                                        │
+│  INTELLIGENT CONTEXT                                                        │
 │  • Conversation history management                                             │
 │  • RAG-powered context retrieval                                               │
 │  • Multilingual support (BGE + multilingual-E5)                               │
 │  • Context-aware responses                                                     │
 │                                                                                 │
-│  ✅ PRODUCTION-READY                                                           │
+│  PRODUCTION-READY                                                           │
 │  • Docker containerization                                                     │
 │  • Health monitoring (5-minute intervals)                                      │
 │  • Error handling & fallbacks                                                  │
@@ -597,26 +597,26 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## 📈 Performance Metrics
+## Performance Metrics
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                              PERFORMANCE METRICS                               │
 ├─────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                 │
-│  🚀 RESPONSE TIMES:                                                             │
+│  RESPONSE TIMES:                                                             │
 │  • Connection initialization: ~360ms                                            │
 │  • Total response time: ~4.6 seconds                                           │
 │  • LLM token streaming: Real-time                                            │
 │  • TTS chunk streaming: Real-time                                             │
 │                                                                                 │
-│  📊 THROUGHPUT:                                                                 │
+│  THROUGHPUT:                                                                 │
 │  • LLM: vLLM high-throughput inference                                        │
 │  • TTS: MeloTTS optimized synthesis                                           │
 │  • RAG: BGE embeddings + Qdrant vector search                                  │
 │  • Audio: 100+ chunks per response                                            │
 │                                                                                 │
-│  🔧 RESOURCE OPTIMIZATION:                                                     │
+│  RESOURCE OPTIMIZATION:                                                     │
 │  • GPU acceleration (LLM + TTS)                                                │
 │  • AWQ quantization (LLM efficiency)                                          │
 │  • Model caching (faster startup)                                             │

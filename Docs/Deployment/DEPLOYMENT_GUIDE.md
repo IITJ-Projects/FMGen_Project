@@ -1,10 +1,10 @@
 # Conversational AI Agent - Server Deployment Guide
 
-## 🚀 Complete Deployment Process
+## Complete Deployment Process
 
 This guide will walk you through deploying your Conversational AI Agent on a production server with GPU support.
 
-## 📋 Prerequisites
+## Prerequisites
 
 ### Server Requirements
 
@@ -22,7 +22,7 @@ This guide will walk you through deploying your Conversational AI Agent on a pro
 - **NVIDIA Docker**: nvidia-docker2
 - **NVIDIA Drivers**: 550+ (for CUDA 12.6)
 
-## 🔧 Step-by-Step Deployment
+## Step-by-Step Deployment
 
 ### Step 1: Server Setup
 
@@ -196,7 +196,7 @@ curl -X POST http://localhost:8004/retrieve \
   -d '{"query": "artificial intelligence", "top_k": 5}'
 ```
 
-## 🔒 Production Security Setup
+## Production Security Setup
 
 ### Step 10: Configure Firewall
 
@@ -250,7 +250,7 @@ sudo systemctl restart nginx
 sudo certbot --nginx -d your-domain.com
 ```
 
-## 📊 Monitoring and Maintenance
+## Monitoring and Maintenance
 
 ### Step 12: Setup Monitoring
 
@@ -335,7 +335,7 @@ EOF
 chmod +x backup.sh
 ```
 
-## 🚨 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -379,7 +379,7 @@ chmod +x backup.sh
    docker system prune -a
    ```
 
-## 📈 Performance Optimization
+## Performance Optimization
 
 ### GPU Optimization
 
@@ -399,7 +399,7 @@ chmod +x backup.sh
 - Implement connection pooling
 - Monitor network usage with `iotop`
 
-## ✅ Deployment Checklist
+## Deployment Checklist
 
 - [ ] Server meets hardware requirements
 - [ ] Docker and NVIDIA Docker installed
@@ -414,7 +414,7 @@ chmod +x backup.sh
 - [ ] Backup strategy implemented
 - [ ] Test pipeline working
 
-## 🎯 Next Steps
+## Next Steps
 
 1. **Load your data** into the RAG service
 2. **Fine-tune models** for your specific domain
@@ -423,4 +423,4 @@ chmod +x backup.sh
 5. **Setup alerting** for service health
 6. **Implement CI/CD** for automated deployments
 
-Your Conversational AI Agent is now ready for production use! 🚀
+Your Conversational AI Agent is now ready for production use!

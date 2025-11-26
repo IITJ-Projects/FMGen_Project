@@ -1,6 +1,6 @@
 # Zevo AI - End-to-End Workflow Diagram
 
-## 🔄 Complete End-to-End Workflow for Text Mode
+## Complete End-to-End Workflow for Text Mode
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -9,7 +9,7 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## 📱 Step 1: User Interface Layer
+## Step 1: User Interface Layer
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -33,7 +33,7 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## 🔗 Step 2: Communication Layer
+## Step 2: Communication Layer
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -53,7 +53,7 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## 🎯 Step 3: Orchestration Service
+## Step 3: Orchestration Service
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -80,7 +80,7 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## 🧠 Step 4: RAG Service (Context Retrieval)
+## Step 4: RAG Service (Context Retrieval)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -112,7 +112,7 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## 🤖 Step 5: LLM Service (Text Generation)
+## Step 5: LLM Service (Text Generation)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -146,7 +146,7 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## 🔊 Step 6: TTS Service (Audio Synthesis)
+## Step 6: TTS Service (Audio Synthesis)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -185,7 +185,7 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## 💾 Step 7: Vector Database
+## Step 7: Vector Database
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -218,7 +218,7 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## 🔄 Complete End-to-End Data Flow
+## Complete End-to-End Data Flow
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -291,14 +291,14 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## 📊 Performance Metrics & Timing
+## Performance Metrics & Timing
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                        PERFORMANCE METRICS & TIMING                           │
 ├─────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                 │
-│  🚀 RESPONSE TIMING BREAKDOWN:                                                  │
+│  RESPONSE TIMING BREAKDOWN:                                                  │
 │  • Connection initialization: ~360ms                                            │
 │  • Session management: ~50ms                                                   │
 │  • Context preparation: ~100ms                                                  │
@@ -308,13 +308,13 @@
 │  • Audio playback: ~4,000ms (100+ chunks)                                     │
 │  • Total end-to-end: ~4,600ms                                                  │
 │                                                                                 │
-│  📈 THROUGHPUT CAPABILITIES:                                                   │
+│  THROUGHPUT CAPABILITIES:                                                   │
 │  • LLM: 50+ tokens/second (vLLM optimized)                                     │
 │  • TTS: 100+ chunks/second (MeloTTS streaming)                                │
 │  • RAG: 1000+ queries/second (Qdrant vector search)                          │
 │  • WebSocket: 1000+ messages/second (real-time)                              │
 │                                                                                 │
-│  🔧 RESOURCE UTILIZATION:                                                      │
+│  RESOURCE UTILIZATION:                                                      │
 │  • GPU Memory: ~8GB (LLM + TTS)                                               │
 │  • CPU Usage: ~40% (orchestration + RAG)                                      │
 │  • RAM Usage: ~16GB (all services)                                            │
@@ -322,7 +322,7 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## 🛠️ Technology Stack Summary
+## Technology Stack Summary
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐

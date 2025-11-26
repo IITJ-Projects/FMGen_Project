@@ -3,6 +3,7 @@
 ## Complete Workflow: Upload → Extract → Chunk → Embed → Store
 
 ### Overview Diagram
+
 ```
 Frontend UI → Upload Endpoint → File Storage
                   ↓
@@ -35,11 +36,12 @@ Frontend UI → Upload Endpoint → File Storage
 
 ## Step-by-Step Detailed Flow
 
-### **STEP 0: File Upload** 📤
+### **STEP 0: File Upload**
 
 **Location:** `rag_ingestion_app/main.py:726` - `upload_file()`
 
 **What Happens:**
+
 1. User selects PDF/DOCX/TXT file in UI
 2. Frontend sends `POST /upload` with file data
 3. Server validates:
@@ -50,6 +52,7 @@ Frontend UI → Upload Endpoint → File Storage
 6. Returns `file_id` to frontend
 
 **Code:**
+
 ```python
 # Generate unique file ID
 file_id = str(uuid.uuid4())
@@ -65,11 +68,12 @@ async with aiofiles.open(file_path, 'wb') as f:
 
 ---
 
-### **STEP 1: Process Request** ▶️
+### **STEP 1: Process Request**
 
 **Location:** `rag_ingestion_app/main.py:781` - `process_file()`
 
 **What Happens:**
+
 1. User clicks "Process" button in UI
 2. Frontend sends `POST /process/{file_id}`
 3. Server finds file: `uploads/{file_id}_*`
@@ -77,11 +81,12 @@ async with aiofiles.open(file_path, 'wb') as f:
 
 ---
 
-### **STEP 2: Text Extraction** 📄
+### **STEP 2: Text Extraction**
 
 **Location:** `rag_ingestion_app/main.py:287` - `extract_text_from_file()`
 
 **What Happens:**
+
 1. Based on file extension, calls appropriate extractor:
    - **PDF:** Uses `PyPDF2` to extract text from each page
    - **DOCX:** Uses `python-docx` to extract paragraphs
@@ -90,12 +95,14 @@ async with aiofiles.open(file_path, 'wb') as f:
 3. Returns plain text string
 
 **Code:**
+
 ```python
 # Extract text from file (run in thread pool to avoid blocking)
 text = await asyncio.to_thread(extract_text_from_file, file_path)
 ```
 
 **Example Output:**
+
 ```
 "This is page 1 content... This is page 2 content..."
 ```
@@ -104,11 +111,12 @@ text = await asyncio.to_thread(extract_text_from_file, file_path)
 
 ---
 
-### **STEP 3: Text Chunking** ✂️
+### **STEP 3: Text Chunking**
 
 **Location:** `rag_ingestion_app/main.py:304` - `chunk_text()`
 
 **What Happens:**
+
 1. Text is split into chunks of **1024 characters** each
 2. Chunks have **128 character overlap** (for context continuity)
 3. Uses semantic boundary detection:
@@ -119,6 +127,7 @@ text = await asyncio.to_thread(extract_text_from_file, file_path)
 5. If timeout, falls back to simple chunking (just split by size)
 
 **Code:**
+
 ```python
 # Use asyncio.wait_for with thread pool to prevent hanging
 chunks = await asyncio.wait_for(
@@ -128,6 +137,7 @@ chunks = await asyncio.wait_for(
 ```
 
 **Example Output:**
+
 ```
 [
   "This is chunk 1 (first 1024 chars)...",
@@ -140,11 +150,12 @@ chunks = await asyncio.wait_for(
 
 ---
 
-### **STEP 4: Document Structure Creation** 📝
+### **STEP 4: Document Structure Creation**
 
 **Location:** `rag_ingestion_app/main.py:527` - `generate_embeddings_for_chunks()`
 
 **What Happens:**
+
 1. For each chunk, creates a document structure:
    - **Generates UUID** for chunk (required by Qdrant)
    - **Text:** The chunk content
@@ -153,6 +164,7 @@ chunks = await asyncio.wait_for(
 3. This is just preparing the data for the RAG service
 
 **Code:**
+
 ```python
 for i, chunk in enumerate(chunks):
     chunk_id = str(uuid.uuid4())  # Generate UUID for Qdrant
@@ -171,6 +183,7 @@ for i, chunk in enumerate(chunks):
 ```
 
 **Example Output:**
+
 ```json
 [
   {
@@ -192,17 +205,19 @@ for i, chunk in enumerate(chunks):
 
 ---
 
-### **STEP 5: Batch Ingestion to RAG Service** 🚀
+### **STEP 5: Batch Ingestion to RAG Service**
 
 **Location:** `rag_ingestion_app/main.py:568` - `ingest_documents_to_rag()`
 
 **What Happens:**
+
 1. Documents are split into batches of 50 (to prevent memory issues)
 2. Each batch is sent to RAG service via HTTP POST
 3. Small delay (0.1s) between batches to yield control to event loop
 4. Progress logged per batch
 
 **Code:**
+
 ```python
 # For small batches (< 50 docs), send all at once
 if total_docs <= INGESTION_BATCH_SIZE:
@@ -216,6 +231,7 @@ for batch_start in range(0, total_docs, INGESTION_BATCH_SIZE):
 ```
 
 **Request to RAG Service:**
+
 ```http
 POST http://rag-service:8004/ingest
 Content-Type: application/json
@@ -236,22 +252,25 @@ Content-Type: application/json
 
 ---
 
-### **STEP 6: RAG Service Processing** 🧠
+### **STEP 6: RAG Service Processing**
 
 **Location:** `rag_service/main.py:580` - `ingest_documents()`
 
 **What Happens:**
 
 #### 6a. **Language Detection**
+
 - For each document, detects language (English vs other)
 - Uses `langdetect` library
 
 #### 6b. **Embedding Generation**
+
 - **English documents:** Uses `BAAI/bge-large-en-v1.5` model (1024 dimensions)
 - **Multilingual documents:** Uses `intfloat/multilingual-e5-large` model (1024 dimensions)
 - Generates vector embedding for each chunk's text
 
 **Code:**
+
 ```python
 # Detect language for each document
 doc_language = detect_language(doc.text)
@@ -264,15 +283,18 @@ embedding = embedding_model.encode(doc.text).tolist()
 ```
 
 **Example Output:**
+
 ```
 Embedding: [0.123, -0.456, 0.789, ..., 1024 dimensions total]
 ```
 
 #### 6c. **Prepare for Qdrant**
+
 - Combines document text, embedding vector, and metadata
 - Adds language and embedding model info to metadata
 
 **Code:**
+
 ```python
 doc_dict = {
     "id": doc.id,  # UUID
@@ -289,11 +311,12 @@ doc_dict = {
 
 ---
 
-### **STEP 7: Store in Qdrant** 💾
+### **STEP 7: Store in Qdrant**
 
 **Location:** `rag_service/main.py:633` - `upsert_documents()`
 
 **What Happens:**
+
 1. Connects to Qdrant database (running in separate container)
 2. For each document:
    - Creates a "point" with:
@@ -304,6 +327,7 @@ doc_dict = {
 4. Qdrant stores vectors in its vector database for fast similarity search
 
 **Code:**
+
 ```python
 points = []
 for doc, embedding in zip(documents, embeddings):
@@ -322,6 +346,7 @@ await client.put(f"{base_url}/collections/documents/points", json={"points": poi
 ```
 
 **Storage Structure:**
+
 ```
 Qdrant Collection: "documents"
 ├── Point 1
@@ -339,9 +364,10 @@ Qdrant Collection: "documents"
 
 ---
 
-### **STEP 8: Response Back to Frontend** ✅
+### **STEP 8: Response Back to Frontend**
 
 **What Happens:**
+
 1. RAG service returns ingestion result:
    ```json
    {
@@ -406,4 +432,3 @@ Qdrant Collection: "documents"
 3. **Batching:** Large documents split into batches of 50
 4. **Timeouts:** Chunking has timeout protection
 5. **Error Recovery:** Failed batches don't stop entire process
-
