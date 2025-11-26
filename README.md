@@ -1,4 +1,4 @@
-# Chat Agent
+# Conversation Agent
 
 A cutting-edge conversational AI agent with **ultra-low latency streaming**, **real-time voice interaction**, and **emotionally intelligent responses**. Built with industry-standard technologies for production deployment.
 
